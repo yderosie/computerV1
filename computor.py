@@ -39,23 +39,31 @@ def enter():
 	else:
 		print "Le paramettre entrer ne correspond pas a une equation."
 		return
+	
+	print equation
 	liste = equation.split('=')
 	equ = re.split(r'[+-]', liste[0])
-	c = ax = bx = 0
+	#c = ax = bx = 0
+	tab = [(0,""), (1,""), (2,"")]
+	print tab
 	for var in equ:
 #		print var
-		if var.count('x^0') or var.count('X^0'):
-			c = var[::-1]
-			c = c[4:]
-			c = c[::-1]
-		elif var.count('x^1') or var.count('X^1'):
-			bx = var[::-1]
-			bx = bx[4:]
-			bx = bx[::-1]
-		elif var.count('x^2') or var.count('X^2'):
-			ax = var[::-1]
-			ax = ax[4:]
-			ax = ax[::-1]
+		tab[var.split('^').[1]] = var.split('*').[0]
+
+	#	if var.count('x^0') or var.count('X^0'):
+	#		c = var[::-1]
+	#		c = c[4:]
+	#		c = c[::-1]
+	#	elif var.count('x^1') or var.count('X^1'):
+	#		bx = var[::-1]
+	#		bx = bx[4:]
+	#		bx = bx[::-1]
+	#	elif var.count('x^2') or var.count('X^2'):
+	#		#ax = var[::-1]
+	#		#ax = ax[4:]
+	#		#ax = ax[::-1]
+	#		ax = var[:-4]
+	print tab
 #	print equ
 	if liste[1].find('X^0') or liste[1].find('x^0'):
 		egale = liste[1][::-1]
