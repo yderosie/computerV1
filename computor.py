@@ -20,10 +20,17 @@ import re
 #		j += 1
 #		print i, k, j
 
-def delta(ax,bx,c):
-	pass
-
+def delta(tab):
+	d = (tab[1] * tab[1]) - 4 * tab[0] * tab[2]
+	if d > 0:
+		sup()
+	elif d == 0:
+		egal()
+	else:
+		
+ 
 def enter():
+	solve = True
 	regex = re.compile("((?:^\s*([+-])?|\s*(?<![+-])([+-]))\s*(?:(\d+(?:\.\d*)?)\s*\*)?\s*(?<![+-])([+-])?(\d+(?:\.\d*)?)?([xX])?(?:\^(\d+))?\s*)+=((?:^\s*([+-])?|\s*(?<![+-])([+-]))|(?:(\d+(?:\.\d*)?)\s*\*)?\s*(?<![+-])([+-])?(\d+(?:\.\d*)?)?([xX])?(?:\^(\d+))?\s*)+")
 	equation = str(sys.argv[1]).replace(' ', '')
 	if (regex.match(equation)):
@@ -33,28 +40,29 @@ def enter():
 			if (int(var.split('^')[1]) > j):
 				j = int(var.split('^')[1])
 			if (int(var.split('^')[1]) > 2):
-				print "The polynomial degree is stricly greater than 2, I can't solve."
-				return
+				solve = False	#print "The polynomial degree is stricly greater than 2, I can't solve."
 	else:
 		print "Le paramettre entrer ne correspond pas a une equation."
 		return
-
 	print equation
 	liste = equation.split('=')
 	equ = re.split(r'[+-]', liste[0])
-	tab = [0.0, 0.0, 0.0]
-	tab2 = [0.0, 0.0, 0.0]
+	tab = []
+	i = 0
+	while j < i:
+		tab.append(0.0)
+		i += 1
 	for var in equ:
-		tab[int(var.split('^')[1])] = float(var.split('*')[0])
+		tab[int(var.split('^')[1])] += float(var.split('*')[0])
 	egale = re.split(r'[+-]', liste[1])
 	for var in egale:
-		tab2[int(var.split('^')[1])] = float(var.split('*')[0])
-	tab[0] = tab[0] - tab2[0]
-	tab[1] = tab[1] - tab2[1]
-	tab[2] = tab[2] - tab2[2]
+		tab[int(var.split('^')[1])] -= float(var.split('*')[0])
 	print ("Reduced form: "+ str(tab[0]) +" + "+ str(tab[1]) +" * X + "+ str(tab[2]) +" * X^2 = 0")
 	print ("Polynomial degree:" + str(j))
-	delta(tab[2],tab[1],tab[0])
+	if not solve:
+		print "The polynomial degree is stricly greater than 2, I can't solve."
+		return
+	delta(tab)
 	#parsing(equation)
 
 enter()
