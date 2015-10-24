@@ -2,52 +2,68 @@
 
 import sys
 import re
+import math
 
-#def parsing2(equation):
-#	i = 0
-#	while i < len(equation) and equation[i] != '-' and equation[i] != '+' and equation[i] != '=' :
-#		i += 1
-#	return i
-#
-#def parsing(equation):
-#	i = j = k = 0
-#	while i < len(equation):
-#		liste = {}
-#		i = parsing2(equation[k:]) + k + 1
-#		liste[j] = equation[k:i]
-#		k = i
-#		print liste[j]
-#		j += 1
-#		print i, k, j
+def isqrt(n):  
+    'isqrt(n)\n\nReturn floor(sqrt(n)).'  
+  
+    if not isinstance(n, int):  
+        raise TypeError('an int is required')  
+    if n < 0:  
+        raise ValueError('math domain error')  
+  
+    guess = (n >> n.bit_length() // 2) + 1  
+    result = (guess + n // guess) // 2  
+    while abs(result - guess) > 1:  
+        guess = result  
+        result = (guess + n // guess) // 2  
+    while result * result > n:  
+        result -= 1  
+    return result  
+
+def sup(tab,d):
+	print d
+	result1 = ((-tab[1]) - isqrt(int(d)))/(2 * tab[2])
+	result2 = ((-tab[1]) + isqrt(int(d)))/(2 * tab[2])
+	print result1
+	print result2
+
+def egal(tab):
+	result = (-tab[1]) / (2 * tab[2])
+	print result
 
 def delta(tab):
-	d = (tab[1] * tab[1]) - 4 * tab[0] * tab[2]
+	d = (tab[1] * tab[1]) - (4 * tab[2] * tab[0])
+	print d
 	if d > 0:
 		print "Discriminant is strictly positive, the two solutions are:"
-		sup()
+		sup(tab, d)
 	elif d == 0:
-		egal()
+		print "The solution is:"
+		egal(tab)
 	else:
-		pass
+		print "Discriminant is strictly negative, they are not solution"
+
+def degre_one(tab):
+	result = (-tab[0])/(tab[1])
+	print result
 
 def enter():
 	solve = True
-	regex = re.compile("((?:^\s*([+-])?|\s*(?<![+-])([+-]))\s*(?:(\d+(?:\.\d*)?)\s*\*)?\s*(?<![+-])([+-])?(\d+(?:\.\d*)?)?([xX])?(?:\^(\d+))?\s*)+=((?:^\s*([+-])?|\s*(?<![+-])([+-]))|(?:(\d+(?:\.\d*)?)\s*\*)?\s*(?<![+-])([+-])?(\d+(?:\.\d*)?)?([xX])?(?:\^(\d+))?\s*)+")
 	equation = str(sys.argv[1]).replace(' ', '')
-	if (regex.match(equation)):
-		j = 0
-		parsing = re.split(r'[+=-]', equation)
-		for var in parsing:
+	regex = re.findall("([+-]?\s*\d*[.,]?\d*\s*\*\s*[Xx]\^\d)", equation)
+	print regex
+	j = 0
+	if regex:
+		for var in regex:
 			if (int(var.split('^')[1]) > j):
 				j = int(var.split('^')[1])
-			if (int(var.split('^')[1]) > 2):
-				solve = False	#print "The polynomial degree is stricly greater than 2, I can't solve."
 	else:
 		print "The paramettre entering is not an equation ."
 		return
 	print equation
 	liste = equation.split('=')
-	equ = re.split(r'[+-]', liste[0])
+	equ = re.findall("([+-]?\s*\d*[.,]?\d*\s*\*\s*[Xx]\^\d)", liste[0])
 	tab = []
 	i = 0
 	while j >= i:
@@ -55,20 +71,28 @@ def enter():
 		i += 1
 	for var in equ:
 		tab[int(var.split('^')[1])] += float(var.split('*')[0])
-	egale = re.split(r'[+-]', liste[1])
+	egale = re.findall("([+-]?\s*\d*[.,]?\d*\s*\*\s*[Xx]\^\d)", liste[1])
 	for var in egale:
 		tab[int(var.split('^')[1])] -= float(var.split('*')[0])
-	print tab
+	j = 0
+	for var in enumerate(tab):
+		if var[1] and int(var[0]) > j:
+			j = int(var[0])
+	print ("Reduced form: "),
 	for t in enumerate(tab):
-		if t:
-			print str(t[1]) + " * x^" + str(t[0]) + (" + " if int(t[0]) != j else ''),
+		if t[1]:
+			print ("+ " if int(t[1]) > 0 and int(t[0] != 0) else '') + str(t[1]) + (" * X^" + str(t[0]) if int(t[0]) != 0 else ''),
 	print ("= 0")
-	print ("Reduced form: "+ str(tab[0]) +" + "+ str(tab[1]) +" * X + "+ str(tab[2]) +" * X^2 = 0")
+#	print ("Reduced form: "+ str(tab[0]) +" + "+ str(tab[1]) +" * X + "+ str(tab[2]) +" * X^2 = 0")
 	print ("Polynomial degree:" + str(j))
-	if not solve:
+	if int(j) > 2:
 		print "The polynomial degree is stricly greater than 2, I can't solve."
 		return
-	delta(tab)
-	#parsing(equation)
+	if int(j) == 2:
+		delta(tab)
+	elif int(j) == 1:
+		degre_one(tab)
+	else:
+		pass
 
 enter()
