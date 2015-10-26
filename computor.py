@@ -4,27 +4,24 @@ import sys
 import re
 import math
 
-def isqrt(n):  
-    'isqrt(n)\n\nReturn floor(sqrt(n)).'  
-  
-    if not isinstance(n, int):  
-        raise TypeError('an int is required')  
-    if n < 0:  
-        raise ValueError('math domain error')  
-  
-    guess = (n >> n.bit_length() // 2) + 1  
-    result = (guess + n // guess) // 2  
-    while abs(result - guess) > 1:  
-        guess = result  
-        result = (guess + n // guess) // 2  
-    while result * result > n:  
-        result -= 1  
-    return result  
+def rsqrt(x):
+    n = int(x)
+    if n == 0:
+        return 0
+    a, b = divmod(n.bit_length(), 2)
+    x = 2**(a+b)
+    while True:
+        y = (x + n//x)//2
+        if y >= x:
+            return x
+        x = y
 
 def sup(tab,d):
 	print d
-	result1 = ((-tab[1]) - isqrt(int(d)))/(2 * tab[2])
-	result2 = ((-tab[1]) + isqrt(int(d)))/(2 * tab[2])
+	result1 = ((-tab[1]) - rsqrt(int(d)))/(2 * tab[2])
+	result2 = ((-tab[1]) + rsqrt(int(d)))/(2 * tab[2])
+	print ((-tab[1]) - math.sqrt(int(d)))/(2 * tab[2])
+	print ((-tab[1]) + math.sqrt(int(d)))/(2 * tab[2])
 	print result1
 	print result2
 
@@ -47,6 +44,9 @@ def delta(tab):
 def degre_one(tab):
 	result = (-tab[0])/(tab[1])
 	print result
+
+def diff(tab):
+	pass
 
 def enter():
 	solve = True
@@ -93,6 +93,6 @@ def enter():
 	elif int(j) == 1:
 		degre_one(tab)
 	else:
-		pass
+		diff(tab)
 
 enter()
